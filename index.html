@@ -312,7 +312,9 @@
 <div class="screen" id="howScreen">
   <div class="howto-panel">
     <h2>HOW TO PLAY 🎮</h2>
-    ⚡ A math question glows on the screen — type the answer and hit <span class="em">Enter</span> (or the ✔ key).<br>
+    ⚡ A math question glows on the screen — just type the answer. <span class="em">No Enter needed:</span> the moment it's right, you zoom to the next one!<br>
+    ❌ If you type a full wrong answer, the correct one flashes up and the game moves on.<br>
+    ➖ For negative answers, hit the <span class="em">±</span> key.<br>
     ⏱️ Answer <span class="em">before the timer bar runs out</span> — faster answers score more points!<br>
     🔥 Correct answers in a row build a <span class="em">streak combo</span> that multiplies your score.<br>
     💜 You have <span class="em">3 lives</span> per level. A wrong or too-slow answer costs one.<br>
@@ -501,8 +503,8 @@ function q(text, answer) {
 
 /* Practice: gentle questions + coach messages */
 const PRACTICE_STEPS = [
-  { coach: "Hi! 👋 Welcome to <b>Practice Mode</b>. A question appears in big glowing letters. Type your answer with the keypad or your keyboard, then press <b>Enter ✔</b>. Try this one!", gen: () => q(`${ri(2,5)} + ${ri(2,5)}`) },
-  { coach: "Awesome! 🎉 If you make a typo, press the <b>⌫</b> key to erase. No rush here — Practice Mode has <b>no timer</b>.", gen: () => q(`${ri(4,9)} + ${ri(3,8)}`) },
+  { coach: "Hi! 👋 Welcome to <b>Practice Mode</b>. A question appears in big glowing letters. Just type the answer — <b>no Enter needed!</b> The moment it's right, you fly to the next one. Try it!", gen: () => q(`${ri(2,5)} + ${ri(2,5)}`) },
+  { coach: "Awesome! 🎉 If a full wrong answer goes in, the game shows you the <b>correct answer</b> and moves right along — no time wasted. No rush here though: Practice Mode has <b>no timer</b>.", gen: () => q(`${ri(4,9)} + ${ri(3,8)}`) },
   { coach: "In real levels, a <b>timer bar</b> shrinks at the top. Answering fast = more points! Let's try subtraction.", gen: () => { const a = ri(10,18), b = ri(2,9); return q(`${a} − ${b}`); } },
   { coach: "🔥 Answering several in a row builds a <b>STREAK</b> — your score multiplies! Now a times table:", gen: () => q(`${ri(2,6)} × ${ri(2,6)}`) },
   { coach: "💜 In real levels you have <b>3 lives</b>. Wrong or too slow = lose one. But wrong answers here are free! Try division:", gen: () => { const b = ri(2,5), ans = ri(2,6); return q(`${b*ans} ÷ ${b}`); } },
@@ -649,6 +651,19 @@ function submitAnswer() {
   else handleWrong(false);
 }
 
+/* Auto-check after every keystroke: right answer advances instantly;
+   a complete wrong answer (same digit count) reveals the answer and moves on.
+   If only the sign differs, wait — the player can still hit ± to fix it. */
+function checkAuto() {
+  if (G.awaitingNext) return;
+  if (G.input === '' || G.input === '-') return;
+  const val = parseInt(G.input, 10);
+  if (val === G.answer) { handleCorrect(); return; }
+  const typedDigits = G.input.replace('-', '').length;
+  const ansDigits = String(Math.abs(G.answer)).length;
+  if (typedDigits >= ansDigits && Math.abs(val) !== Math.abs(G.answer)) handleWrong(false);
+}
+
 function handleCorrect() {
   stopTimer();
   G.awaitingNext = true;
@@ -668,7 +683,7 @@ function handleCorrect() {
   sfx.correct();
   spawnBurst(24, innerWidth / 2, innerHeight * 0.35);
   updateHUD();
-  setTimeout(() => advance(), 750);
+  setTimeout(() => advance(), 550);
 }
 
 function handleWrong(timedOut) {
@@ -678,15 +693,10 @@ function handleWrong(timedOut) {
   questionBox.classList.add('wrong-flash');
   sfx.wrong();
   if (G.mode === 'practice') {
-    feedbackMsg.innerHTML = timedOut ? '' : `${pick(ENCOURAGE)} &nbsp; Hint: the answer is <b>${G.answer}</b> — type it and press ✔`;
+    feedbackMsg.innerHTML = `${pick(ENCOURAGE)} &nbsp; The answer was <b>${G.answer}</b>`;
     feedbackMsg.className = 'fb-hint';
-    // let them retry the same question with the hint
-    setTimeout(() => {
-      G.awaitingNext = false;
-      G.input = '';
-      renderInput();
-      questionBox.className = '';
-    }, 600);
+    updateHUD();
+    setTimeout(() => advance(), 1500);
     return;
   }
   G.lives--;
@@ -783,21 +793,19 @@ function endLevel(finished) {
 
 /* ================= Input: keypad + keyboard ================= */
 const keypad = document.getElementById('keypad');
-const KEYS = ['7','8','9','4','5','6','1','2','3','±','0','⌫','✔'];
+const KEYS = ['7','8','9','4','5','6','1','2','3','±','0','⌫'];
 KEYS.forEach(k => {
   const b = document.createElement('button');
-  b.className = 'key' + (k === '✔' ? ' enter' : (k === '⌫' || k === '±') ? ' action' : '');
+  b.className = 'key' + ((k === '⌫' || k === '±') ? ' action' : '');
   b.textContent = k;
-  if (k === '✔') b.style.gridColumn = '1 / -1';
   b.onclick = () => pressKey(k);
   keypad.appendChild(b);
 });
 
 function pressKey(k) {
   if (!screens.gameScreen.classList.contains('active')) return;
-  if (G.awaitingNext && k !== '✔') return;
+  if (G.awaitingNext) return;
   sfx.key();
-  if (k === '✔') { submitAnswer(); return; }
   if (k === '⌫') { G.input = G.input.slice(0, -1); }
   else if (k === '±') {
     G.input = G.input.startsWith('-') ? G.input.slice(1) : '-' + G.input;
@@ -806,13 +814,14 @@ function pressKey(k) {
     if (G.input.replace('-', '').length < 6) G.input += k;
   }
   renderInput();
+  checkAuto();
 }
 
 addEventListener('keydown', e => {
   if (!screens.gameScreen.classList.contains('active')) return;
   if (/^\d$/.test(e.key)) pressKey(e.key);
   else if (e.key === 'Backspace') pressKey('⌫');
-  else if (e.key === 'Enter') pressKey('✔');
+  else if (e.key === 'Enter') submitAnswer(); // fallback: force-check a short answer
   else if (e.key === '-') pressKey('±');
 });
 
