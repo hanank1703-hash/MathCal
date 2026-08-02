@@ -103,10 +103,9 @@
   .hero-photo-wrap{position:relative;display:flex;justify-content:center;}
   .photo-ring{
     position:relative;width:min(340px,80vw);aspect-ratio:1/1;border-radius:50%;
-    background:conic-gradient(from 0deg,var(--gold2),var(--gold-dim),var(--gold2));
-    padding:4px;animation:spin 14s linear infinite;
+    background:linear-gradient(160deg,var(--gold2),var(--gold-dim) 60%,var(--gold2));
+    padding:4px;
   }
-  @keyframes spin{to{transform:rotate(360deg);}}
   .photo-inner{
     width:100%;height:100%;border-radius:50%;background:var(--panel);
     display:flex;align-items:center;justify-content:center;overflow:hidden;
@@ -138,6 +137,17 @@
   .comp-chip:hover{border-color:var(--gold);transform:translateY(-3px);}
   .comp-chip .ic{color:var(--gold2);font-size:1.1rem;}
 
+  /* ---------- philosophy ---------- */
+  .phil-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
+  @media (max-width:800px){.phil-grid{grid-template-columns:1fr;}}
+  .phil-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px;
+    border-left:2px solid var(--gold);transition:transform .3s ease, border-color .3s ease;
+  }
+  .phil-card:hover{transform:translateY(-4px);}
+  .phil-mark{display:block;font-family:var(--serif);font-size:1.15rem;color:var(--gold2);margin-bottom:12px;}
+  .phil-card p{color:var(--muted);font-size:0.92rem;}
+
   /* ---------- experience timeline ---------- */
   .timeline{position:relative;margin-top:10px;}
   .timeline::before{content:'';position:absolute;left:26px;top:0;bottom:0;width:1px;background:linear-gradient(var(--gold),transparent 95%);}
@@ -156,6 +166,10 @@
   .tl-dates{color:var(--muted);font-size:0.82rem;margin-left:auto;}
   .tl-card{
     background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px;margin-top:14px;
+  }
+  .tl-reflect{
+    font-family:var(--serif);color:var(--gold2);font-size:1.02rem;font-style:italic;
+    margin-bottom:18px;padding-bottom:18px;border-bottom:1px dashed var(--line);
   }
   .tl-card ul{padding-left:20px;color:var(--muted);font-size:0.92rem;}
   .tl-card li{margin-bottom:8px;}
@@ -195,32 +209,17 @@
   }
   .case-metric span{display:block;color:var(--muted);font-size:0.72rem;font-family:var(--sans);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
 
-  /* mock illustrations */
-  .mock-aldar{background:linear-gradient(135deg,#1a1508,#0f0d06);}
-  .mock-damac{background:linear-gradient(135deg,#141013,#1d1720);}
-  .mock-talentera{background:linear-gradient(135deg,#0e1512,#0a1a14);}
-  .mock-mgm{background:linear-gradient(135deg,#1a1010,#120a12);}
-  .mock-card{
-    width:78%;height:64%;margin-top:14px;background:var(--panel2);border-radius:12px;border:1px solid var(--line);
-    padding:12px;display:flex;flex-direction:column;gap:8px;
+  /* image placeholders — swap for real product photography anytime */
+  .img-placeholder{
+    background:var(--panel2);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    border-bottom:1px dashed var(--line);
   }
-  .mock-row{height:8px;border-radius:4px;background:rgba(212,175,106,0.18);}
-  .mock-row.short{width:55%;}
-  .mock-row.gold{background:linear-gradient(90deg,var(--gold2),var(--gold));height:10px;width:40%;}
-  .mock-dot-row{display:flex;gap:6px;margin-top:auto;}
-  .mock-pill{width:26px;height:26px;border-radius:50%;background:rgba(212,175,106,0.2);}
-  .chat-bubble{
-    align-self:flex-end;background:linear-gradient(120deg,var(--gold2),var(--gold));color:#181205;font-size:0.6rem;
-    padding:6px 10px;border-radius:10px 10px 0 10px;font-weight:600;
+  .img-placeholder .cam{
+    width:44px;height:44px;border-radius:50%;border:1.5px dashed var(--gold-dim);
+    display:flex;align-items:center;justify-content:center;color:var(--gold2);font-size:1.1rem;opacity:0.8;
   }
-  .rfid-ring{
-    width:70px;height:70px;border-radius:50%;border:3px solid var(--gold2);position:relative;
-    display:flex;align-items:center;justify-content:center;
-  }
-  .rfid-ring::before, .rfid-ring::after{content:'';position:absolute;border-radius:50%;border:1px solid rgba(212,175,106,0.4);}
-  .rfid-ring::before{width:90px;height:90px;}
-  .rfid-ring::after{width:110px;height:110px;}
-  .rfid-ring b{font-family:var(--serif);color:var(--gold2);font-size:0.9rem;}
+  .img-placeholder span{color:var(--muted);font-size:0.7rem;letter-spacing:0.5px;text-align:center;padding:0 20px;}
 
   /* ---------- achievements ---------- */
   .ach-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;}
@@ -277,8 +276,9 @@
     <a href="#top" class="logo">Hanan Khan<span>Senior Product Manager</span></a>
     <div class="navlinks" id="navlinks">
       <a href="#about">About</a>
-      <a href="#experience">Experience</a>
-      <a href="#work">Case Studies</a>
+      <a href="#philosophy">How I Work</a>
+      <a href="#experience">Journey</a>
+      <a href="#work">Work</a>
       <a href="#skills">Skills</a>
       <a href="#education">Education</a>
       <a href="#contact">Contact</a>
@@ -293,12 +293,12 @@
   <section class="hero wrap">
     <div class="hero-grid">
       <div>
-        <span class="kicker reveal in">Available for select opportunities</span>
-        <h1 class="reveal in">Building <em>premium digital experiences</em> for luxury real estate &amp; AI-driven products.</h1>
-        <p class="lead reveal in">Senior Product Manager with 12+ years leading B2B &amp; B2C digital products across Aldar Properties, DAMAC, Bayt.com and MGM Macau — turning customer journeys, immersive experiences and conversational AI into measurable business growth.</p>
+        <span class="kicker reveal in">Hi, I'm Hanan 👋</span>
+        <h1 class="reveal in">I turn <em>"just browsing"</em> into "this is home."</h1>
+        <p class="lead reveal in">For 12+ years I've been the person in the room asking "but what will this actually feel like for the customer?" — then building the answer. Right now that means embedding AI into how people discover their next home at Aldar. Before that, it was VR sales floors at DAMAC, smarter hiring at Bayt.com, and a casino floor that never sleeps at MGM Macau.</p>
         <div class="cta-row reveal in">
-          <a href="#work" class="btn btn-gold">View Case Studies →</a>
-          <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+          <a href="#work" class="btn btn-gold">See what I've built →</a>
+          <a href="#contact" class="btn btn-ghost">Say hello</a>
         </div>
         <div class="stat-row reveal in">
           <div class="stat"><b>12+</b><span>Years in Product</span></div>
@@ -321,14 +321,14 @@
   <section id="about">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="eyebrow">Profile</span>
-        <h2>About Hanan</h2>
+        <span class="eyebrow">Who I Am</span>
+        <h2>Not a job title. A way of paying attention.</h2>
       </div>
       <div class="about-grid reveal">
         <div>
-          <p>Senior Product Manager with 12+ years of experience leading B2B and B2C digital products across Mobile Apps, Websites, Enterprise Platforms, Real Estate, SaaS, FinTech, PropTech, Payments, and AI-enabled customer experiences.</p>
-          <p>Proven expertise in defining product strategy, leading cross-functional teams, managing product roadmaps, and delivering customer-centric digital solutions that drive business growth — with deep experience in customer journey optimization, product analytics, conversion optimization, CRM integrations, and Agile delivery.</p>
-          <p>Currently leading AI transformation initiatives at Aldar Properties, embedding conversational AI, intelligent automation, and AI-powered experiences into digital products to improve customer engagement and operational efficiency.</p>
+          <p>I got into product management by accident and stayed for the obsession: watching someone use something I helped build, and seeing the exact moment it clicks — or doesn't. That moment is where I live.</p>
+          <p>I've spent my career moving between very different worlds — luxury real estate, SaaS hiring platforms, fintech, casino gaming — but the job is always the same underneath: sit with the customer's confusion, argue for what they actually need (not what's easiest to ship), and rally engineers, designers and executives around a version of the product that earns trust.</p>
+          <p>Lately I'm most alive working on AI — not as a buzzword, but as the thing that finally lets a product answer a customer the way a great salesperson would, at 2am, in seconds. That's what I'm building into Aldar's digital ecosystem right now.</p>
         </div>
         <div class="comp-grid">
           <div class="comp-chip"><span class="ic">◆</span> Product Strategy &amp; Vision</div>
@@ -342,13 +342,41 @@
     </div>
   </section>
 
+  <!-- PHILOSOPHY -->
+  <section id="philosophy">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">How I Work</span>
+        <h2>What I actually believe about building products</h2>
+      </div>
+      <div class="phil-grid">
+        <div class="phil-card reveal">
+          <span class="phil-mark">The customer is not a persona</span>
+          <p>Personas are a starting guess. I'd rather sit in on ten real sales calls than read one slide of assumptions — the confusion people show you is more honest than the answers they give in interviews.</p>
+        </div>
+        <div class="phil-card reveal">
+          <span class="phil-mark">Immersive isn't a gimmick</span>
+          <p>VR tours and immersive web experiences only earn their place if they shorten the distance between "I'm curious" and "I'm confident." I've killed features that were impressive and kept ones that were just useful.</p>
+        </div>
+        <div class="phil-card reveal">
+          <span class="phil-mark">AI should feel like help, not a demo</span>
+          <p>The bar for an AI assistant isn't "does it work" — it's "would I trust it with a $2M decision?" I build for that bar, which usually means saying no to the flashy version.</p>
+        </div>
+        <div class="phil-card reveal">
+          <span class="phil-mark">Numbers earn the argument</span>
+          <p>I love a good instinct, but in the room with executives, GA4 and Mixpanel do the persuading. Data doesn't replace judgment — it's what makes judgment hard to dismiss.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- EXPERIENCE -->
   <section id="experience">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="eyebrow">Career Journey</span>
-        <h2>Experience</h2>
-        <p>A track record of leading digital product transformation across luxury real estate, SaaS, and gaming.</p>
+        <span class="eyebrow">The Journey</span>
+        <h2>Where I've built things</h2>
+        <p>Four very different industries, one habit I never broke: get obsessed with the customer before you touch the roadmap.</p>
       </div>
 
       <div class="timeline">
@@ -360,6 +388,7 @@
             <span class="tl-dates">May '25 — Present</span>
           </div>
           <div class="tl-card">
+            <p class="tl-reflect">"This is where I fell for AI — not as a feature, but as the thing that finally lets a customer get a real answer at midnight."</p>
             <ul>
               <li>Own the product vision, strategy and portfolio for Aldar's digital ecosystem — <b>Aldar Properties Website, Live Aldar Mobile App</b> and <b>World of Aldar</b>.</li>
               <li>Leading development of AI-driven products including a <b>RAG-based AI Assistant</b>, intelligent property recommendations, and Agentic AI solutions.</li>
@@ -381,6 +410,7 @@
             <span class="tl-dates">Sep '23 — May '25</span>
           </div>
           <div class="tl-card">
+            <p class="tl-reflect">"I got to turn 'walking into a sales center' into 'walking through your future home' — VR that actually earned its place in the sale."</p>
             <ul>
               <li>Led product strategy and end-to-end lifecycle for the <b>DAMAC Properties E-commerce Website</b> and <b>DAMAC Living Mobile App</b> (iOS &amp; Android).</li>
               <li>Pioneered <b>Virtual Reality Tours (VR)</b>, an immersive web experience, and a Metaverse experience for sales centers and malls.</li>
@@ -402,6 +432,7 @@
             <span class="tl-dates">Oct '20 — Sep '23</span>
           </div>
           <div class="tl-card">
+            <p class="tl-reflect">"Watching recruiters go from drowning in spreadsheets to trusting a shortlist the system built for them — that's the addiction of good product work."</p>
             <ul>
               <li>Owned strategy and roadmap for <b>Talentera</b>, Bayt.com's B2B SaaS Applicant Tracking System, across the MENA region.</li>
               <li>Led transition from single-tenant to <b>multi-tenant enterprise architecture</b> with hierarchical sub-accounts.</li>
@@ -422,6 +453,7 @@
             <span class="tl-dates">Jan '17 — Sep '20</span>
           </div>
           <div class="tl-card">
+            <p class="tl-reflect">"A casino floor taught me more about real-time systems and trust than any textbook — every chip, every second, had to be accounted for."</p>
             <ul>
               <li>Led strategy and delivery of WDTS' patented <b>RFID-based Chip Ownership &amp; Inventory Management System</b>.</li>
               <li>Automated casino cage and table operations end-to-end — ownership assignment, reconciliation, cashier transactions, audit-ready reporting.</li>
@@ -455,22 +487,15 @@
   <section id="work">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="eyebrow">Featured Work</span>
-        <h2>Case Studies</h2>
-        <p>Original illustrative mockups representing product experiences designed and led across each engagement.</p>
+        <span class="eyebrow">Work I'm Proud Of</span>
+        <h2>A few things I'd walk you through in an interview</h2>
+        <p>Photo slots below are ready for real screenshots — send them over and I'll drop them straight in.</p>
       </div>
       <div class="case-grid">
 
+        <!-- Replace this placeholder div's contents with: <img src="assets/case-aldar.jpg" alt="World of Aldar"> -->
         <div class="case-card reveal">
-          <div class="case-visual mock-aldar">
-            <div class="frame-bar"><i></i><i></i><i></i></div>
-            <div class="mock-card">
-              <div class="mock-row gold"></div>
-              <div class="mock-row"></div>
-              <div class="mock-row short"></div>
-              <div class="mock-dot-row"><div class="mock-pill"></div><div class="mock-pill"></div><div class="mock-pill"></div></div>
-            </div>
-          </div>
+          <div class="case-visual img-placeholder"><div class="cam">🖼</div><span>Add a screenshot of World of Aldar</span></div>
           <div class="case-body">
             <span class="case-tag">Aldar Properties</span>
             <h3>World of Aldar — Immersive Web Experience</h3>
@@ -479,15 +504,9 @@
           </div>
         </div>
 
+        <!-- Replace this placeholder div's contents with: <img src="assets/case-damac.jpg" alt="DAMAC Living app"> -->
         <div class="case-card reveal">
-          <div class="case-visual mock-damac">
-            <div class="frame-bar"><i></i><i></i><i></i></div>
-            <div class="mock-card">
-              <div class="mock-row gold"></div>
-              <div class="mock-row"></div>
-              <div class="chat-bubble">Book a VR tour →</div>
-            </div>
-          </div>
+          <div class="case-visual img-placeholder"><div class="cam">🖼</div><span>Add a screenshot of the DAMAC Living app</span></div>
           <div class="case-body">
             <span class="case-tag">DAMAC Living</span>
             <h3>Owner's App — VR Tours &amp; In-App Payments</h3>
@@ -496,16 +515,9 @@
           </div>
         </div>
 
+        <!-- Replace this placeholder div's contents with: <img src="assets/case-talentera.jpg" alt="Talentera ATS"> -->
         <div class="case-card reveal">
-          <div class="case-visual mock-talentera">
-            <div class="frame-bar"><i></i><i></i><i></i></div>
-            <div class="mock-card">
-              <div class="mock-row gold short"></div>
-              <div class="mock-row"></div>
-              <div class="mock-row"></div>
-              <div class="mock-dot-row"><div class="mock-pill"></div><div class="mock-pill"></div></div>
-            </div>
-          </div>
+          <div class="case-visual img-placeholder"><div class="cam">🖼</div><span>Add a screenshot of Talentera</span></div>
           <div class="case-body">
             <span class="case-tag">Bayt.com</span>
             <h3>Talentera — Multi-Tenant ATS Platform</h3>
@@ -514,11 +526,9 @@
           </div>
         </div>
 
+        <!-- Replace this placeholder div's contents with: <img src="assets/case-mgm.jpg" alt="MGM Macau RFID system"> -->
         <div class="case-card reveal">
-          <div class="case-visual mock-mgm">
-            <div class="frame-bar"><i></i><i></i><i></i></div>
-            <div class="rfid-ring"><b>RFID</b></div>
-          </div>
+          <div class="case-visual img-placeholder"><div class="cam">🖼</div><span>Add a photo from MGM Macau</span></div>
           <div class="case-body">
             <span class="case-tag">MGM Macau</span>
             <h3>RFID Chip Ownership &amp; Inventory System</h3>
