@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hanan Khan — Senior Product Manager</title>
+<meta name="description" content="Hanan Khan — Senior Product Manager, Luxury Real Estate, Digital Experience & AI Products.">
+<style>
+  :root{
+    --bg:#0b0c10;
+    --bg2:#111318;
+    --panel:#15171d;
+    --panel2:#1b1e26;
+    --gold:#d4af6a;
+    --gold2:#f3d99b;
+    --gold-dim:#8a733f;
+    --text:#f3efe7;
+    --muted:#a9a6a0;
+    --line:rgba(212,175,106,0.18);
+    --serif: 'Georgia', 'Iowan Old Style', 'Palatino Linotype', 'Times New Roman', serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 28px;}
+  ::selection{background:var(--gold);color:#0b0c10;}
+
+  /* ---------- background ambience ---------- */
+  #bgCanvas{position:fixed;inset:0;z-index:0;opacity:0.55;pointer-events:none;}
+  .grain{
+    position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.035;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    backdrop-filter:blur(14px) saturate(140%);
+    background:rgba(11,12,16,0.65);
+    border-bottom:1px solid var(--line);
+    transition:background .3s ease;
+  }
+  nav{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;max-width:1180px;margin:0 auto;}
+  .logo{font-family:var(--serif);font-size:1.25rem;letter-spacing:1px;color:var(--gold2);}
+  .logo span{color:var(--muted);font-family:var(--sans);font-size:0.7rem;letter-spacing:3px;display:block;text-transform:uppercase;margin-top:2px;}
+  .navlinks{display:flex;gap:28px;font-size:0.82rem;letter-spacing:0.5px;text-transform:uppercase;}
+  .navlinks a{color:var(--muted);position:relative;padding-bottom:4px;transition:color .25s;}
+  .navlinks a:hover{color:var(--gold2);}
+  .navlinks a::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--gold);transition:width .3s;}
+  .navlinks a:hover::after{width:100%;}
+  .navToggle{display:none;background:none;border:1px solid var(--line);color:var(--gold2);width:38px;height:38px;border-radius:8px;font-size:1.1rem;cursor:pointer;}
+
+  @media (max-width:820px){
+    .navlinks{position:fixed;top:64px;left:0;right:0;background:rgba(11,12,16,0.98);flex-direction:column;padding:22px 28px;gap:18px;border-bottom:1px solid var(--line);transform:translateY(-130%);transition:transform .35s ease;}
+    .navlinks.open{transform:translateY(0);}
+    .navToggle{display:block;}
+  }
+
+  section{position:relative;z-index:2;padding:120px 0 90px;}
+  .section-head{max-width:640px;margin:0 auto 56px;text-align:center;}
+  .eyebrow{color:var(--gold);text-transform:uppercase;letter-spacing:4px;font-size:0.72rem;font-weight:600;}
+  h2{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.6rem);margin-top:10px;font-weight:400;}
+  .section-head p{color:var(--muted);margin-top:14px;font-size:0.98rem;}
+
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease, transform .8s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    min-height:100vh;display:flex;align-items:center;padding-top:120px;
+  }
+  .hero-grid{display:grid;grid-template-columns:1.15fr 0.85fr;gap:56px;align-items:center;}
+  @media (max-width:900px){.hero-grid{grid-template-columns:1fr;text-align:center;}}
+  .kicker{display:inline-flex;align-items:center;gap:10px;color:var(--gold2);letter-spacing:3px;text-transform:uppercase;font-size:0.72rem;border:1px solid var(--line);padding:8px 16px;border-radius:999px;background:rgba(212,175,106,0.05);}
+  .kicker::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px var(--gold);}
+  .hero h1{
+    font-family:var(--serif);font-weight:400;
+    font-size:clamp(2.6rem,6vw,4.4rem);
+    line-height:1.05;margin:22px 0 18px;
+  }
+  .hero h1 em{font-style:normal;color:transparent;background:linear-gradient(120deg,var(--gold2),var(--gold),#fff2cf);-webkit-background-clip:text;background-clip:text;}
+  .hero p.lead{color:var(--muted);font-size:1.08rem;max-width:520px;margin-bottom:30px;}
+  @media (max-width:900px){.hero p.lead{margin-left:auto;margin-right:auto;}}
+  .cta-row{display:flex;gap:16px;flex-wrap:wrap;}
+  @media (max-width:900px){.cta-row{justify-content:center;}}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;padding:14px 26px;border-radius:999px;font-size:0.88rem;letter-spacing:0.5px;font-weight:600;cursor:pointer;transition:transform .25s, box-shadow .25s;
+  }
+  .btn-gold{background:linear-gradient(120deg,var(--gold2),var(--gold));color:#181205;box-shadow:0 8px 30px -8px rgba(212,175,106,0.6);}
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 12px 34px -6px rgba(212,175,106,0.75);}
+  .btn-ghost{border:1px solid var(--line);color:var(--text);}
+  .btn-ghost:hover{border-color:var(--gold);color:var(--gold2);}
+
+  .hero-photo-wrap{position:relative;display:flex;justify-content:center;}
+  .photo-ring{
+    position:relative;width:min(340px,80vw);aspect-ratio:1/1;border-radius:50%;
+    background:linear-gradient(160deg,var(--gold2),var(--gold-dim) 60%,var(--gold2));
+    padding:4px;
+  }
+  .photo-inner{
+    width:100%;height:100%;border-radius:50%;background:var(--panel);
+    display:flex;align-items:center;justify-content:center;overflow:hidden;
+    border:6px solid var(--bg);
+  }
+  .monogram{font-family:var(--serif);font-size:5rem;color:var(--gold2);}
+  .photo-inner img{width:100%;height:100%;object-fit:cover;}
+  .badge-float{
+    position:absolute;bottom:6%;right:2%;background:var(--panel2);border:1px solid var(--line);
+    padding:12px 18px;border-radius:14px;font-size:0.78rem;box-shadow:0 20px 40px -20px rgba(0,0,0,0.6);
+    display:flex;align-items:center;gap:10px;
+  }
+  .badge-float .n{color:var(--gold2);font-family:var(--serif);font-size:1.3rem;}
+
+  .stat-row{display:flex;gap:40px;margin-top:44px;flex-wrap:wrap;}
+  @media (max-width:900px){.stat-row{justify-content:center;}}
+  .stat-row .stat b{display:block;font-family:var(--serif);font-size:2rem;color:var(--gold2);}
+  .stat-row .stat span{color:var(--muted);font-size:0.78rem;text-transform:uppercase;letter-spacing:1px;}
+
+  /* ---------- about ---------- */
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start;}
+  @media (max-width:860px){.about-grid{grid-template-columns:1fr;}}
+  .about-grid p{color:var(--muted);margin-bottom:16px;}
+  .comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .comp-chip{
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+    font-size:0.88rem;display:flex;align-items:center;gap:12px;transition:border-color .25s, transform .25s;
+  }
+  .comp-chip:hover{border-color:var(--gold);transform:translateY(-3px);}
+  .comp-chip .ic{color:var(--gold2);font-size:1.1rem;}
+
+  /* ---------- philosophy ---------- */
+  .phil-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
+  @media (max-width:800px){.phil-grid{grid-template-columns:1fr;}}
+  .phil-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px;
+    border-left:2px solid var(--gold);transition:transform .3s ease, border-color .3s ease;
+  }
+  .phil-card:hover{transform:translateY(-4px);}
+  .phil-mark{display:block;font-family:var(--serif);font-size:1.15rem;color:var(--gold2);margin-bottom:12px;}
+  .phil-card p{color:var(--muted);font-size:0.92rem;}
+
+  /* ---------- experience timeline ---------- */
+  .timeline{position:relative;margin-top:10px;}
+  .timeline::before{content:'';position:absolute;left:26px;top:0;bottom:0;width:1px;background:linear-gradient(var(--gold),transparent 95%);}
+  @media (max-width:700px){.timeline::before{left:18px;}}
+  .tl-item{position:relative;padding-left:70px;margin-bottom:52px;}
+  @media (max-width:700px){.tl-item{padding-left:48px;}}
+  .tl-dot{
+    position:absolute;left:16px;top:4px;width:22px;height:22px;border-radius:50%;
+    background:var(--panel);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;
+  }
+  @media (max-width:700px){.tl-dot{left:8px;width:18px;height:18px;}}
+  .tl-dot::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--gold2);}
+  .tl-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin-bottom:6px;}
+  .tl-role{font-family:var(--serif);font-size:1.3rem;color:var(--text);}
+  .tl-company{color:var(--gold2);font-weight:600;}
+  .tl-dates{color:var(--muted);font-size:0.82rem;margin-left:auto;}
+  .tl-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px;margin-top:14px;
+  }
+  .tl-reflect{
+    font-family:var(--serif);color:var(--gold2);font-size:1.02rem;font-style:italic;
+    margin-bottom:18px;padding-bottom:18px;border-bottom:1px dashed var(--line);
+  }
+  .tl-card ul{padding-left:20px;color:var(--muted);font-size:0.92rem;}
+  .tl-card li{margin-bottom:8px;}
+  .tl-card li b, .tl-card li strong{color:var(--text);}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+  .chip{
+    font-size:0.72rem;padding:6px 12px;border-radius:999px;border:1px solid var(--line);color:var(--muted);
+    background:rgba(212,175,106,0.04);
+  }
+  .foundational{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px 26px;font-size:0.88rem;color:var(--muted);
+  }
+  .foundational div{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);}
+  .foundational div:last-child{border-bottom:none;}
+  .foundational b{color:var(--text);font-weight:600;}
+
+  /* ---------- case studies ---------- */
+  .case-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px;}
+  @media (max-width:860px){.case-grid{grid-template-columns:1fr;}}
+  .case-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden;
+    transition:transform .35s ease, box-shadow .35s ease;
+  }
+  .case-card:hover{transform:translateY(-6px);box-shadow:0 30px 60px -30px rgba(212,175,106,0.25);}
+  .case-visual{
+    height:190px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  }
+  .case-visual .frame-bar{position:absolute;top:0;left:0;right:0;height:28px;background:rgba(0,0,0,0.25);display:flex;align-items:center;gap:6px;padding:0 12px;}
+  .frame-bar i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.35);}
+  .case-body{padding:22px 24px 26px;}
+  .case-tag{color:var(--gold2);font-size:0.72rem;letter-spacing:2px;text-transform:uppercase;}
+  .case-body h3{font-family:var(--serif);font-weight:400;font-size:1.25rem;margin:8px 0 10px;}
+  .case-body p{color:var(--muted);font-size:0.9rem;}
+  .case-metric{
+    display:inline-block;margin-top:14px;color:var(--gold2);font-family:var(--serif);font-size:1.1rem;
+    border-top:1px solid var(--line);padding-top:12px;width:100%;
+  }
+  .case-metric span{display:block;color:var(--muted);font-size:0.72rem;font-family:var(--sans);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+
+  /* image placeholders — swap for real product photography anytime */
+  .img-placeholder{
+    background:var(--panel2);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    border-bottom:1px dashed var(--line);
+  }
+  .img-placeholder .cam{
+    width:44px;height:44px;border-radius:50%;border:1.5px dashed var(--gold-dim);
+    display:flex;align-items:center;justify-content:center;color:var(--gold2);font-size:1.1rem;opacity:0.8;
+  }
+  .img-placeholder span{color:var(--muted);font-size:0.7rem;letter-spacing:0.5px;text-align:center;padding:0 20px;}
+
+  /* ---------- achievements ---------- */
+  .ach-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;}
+  @media (max-width:900px){.ach-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:520px){.ach-grid{grid-template-columns:1fr;}}
+  .ach-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px 18px;text-align:center;
+  }
+  .ach-card b{display:block;font-family:var(--serif);font-size:2rem;color:var(--gold2);margin-bottom:8px;}
+  .ach-card span{color:var(--muted);font-size:0.8rem;}
+
+  /* ---------- skills ---------- */
+  .skill-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;}
+  @media (max-width:900px){.skill-cols{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:560px){.skill-cols{grid-template-columns:1fr;}}
+  .skill-col h4{color:var(--gold2);font-size:0.8rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;}
+  .skill-col ul{list-style:none;}
+  .skill-col li{color:var(--muted);font-size:0.9rem;padding:7px 0;border-bottom:1px solid var(--line);}
+
+  /* ---------- education ---------- */
+  .edu-grid{display:grid;grid-template-columns:1fr 1fr;gap:26px;}
+  @media (max-width:700px){.edu-grid{grid-template-columns:1fr;}}
+  .edu-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;}
+  .edu-card h4{color:var(--gold2);font-size:0.75rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:14px;}
+  .edu-card div{padding:10px 0;border-bottom:1px dashed var(--line);color:var(--muted);font-size:0.92rem;}
+  .edu-card div:last-child{border-bottom:none;}
+  .edu-card div b{color:var(--text);display:block;}
+
+  /* ---------- footer / contact ---------- */
+  footer{
+    background:var(--bg2);border-top:1px solid var(--line);padding:80px 0 40px;text-align:center;
+  }
+  footer h2{margin-bottom:14px;}
+  .contact-row{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;margin:34px 0 50px;}
+  .contact-row a{
+    display:flex;align-items:center;gap:10px;color:var(--muted);font-size:0.92rem;padding:12px 20px;
+    border:1px solid var(--line);border-radius:999px;transition:all .25s;
+  }
+  .contact-row a:hover{color:var(--gold2);border-color:var(--gold);}
+  footer .fine{color:var(--muted);font-size:0.78rem;opacity:0.7;}
+
+  ::-webkit-scrollbar{width:10px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:6px;}
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+<div class="grain"></div>
+
+<header>
+  <nav>
+    <a href="#top" class="logo">Hanan Khan<span>Senior Product Manager</span></a>
+    <div class="navlinks" id="navlinks">
+      <a href="#about">About</a>
+      <a href="#philosophy">How I Work</a>
+      <a href="#experience">Journey</a>
+      <a href="#work">Work</a>
+      <a href="#skills">Skills</a>
+      <a href="#education">Education</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <button class="navToggle" id="navToggle" aria-label="Menu">☰</button>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <span class="kicker reveal in">Hi, I'm Hanan 👋</span>
+        <h1 class="reveal in">I turn <em>"just browsing"</em> into "this is home."</h1>
+        <p class="lead reveal in">For 12+ years I've been the person in the room asking "but what will this actually feel like for the customer?" — then building the answer. Right now that means embedding AI into how people discover their next home at Aldar. Before that, it was VR sales floors at DAMAC, smarter hiring at Bayt.com, and a casino floor that never sleeps at MGM Macau.</p>
+        <div class="cta-row reveal in">
+          <a href="#work" class="btn btn-gold">See what I've built →</a>
+          <a href="#contact" class="btn btn-ghost">Say hello</a>
+        </div>
+        <div class="stat-row reveal in">
+          <div class="stat"><b>12+</b><span>Years in Product</span></div>
+          <div class="stat"><b>15%</b><span>Conversion Lift</span></div>
+          <div class="stat"><b>5</b><span>Industries Led</span></div>
+        </div>
+      </div>
+      <div class="hero-photo-wrap reveal in">
+        <div class="photo-ring">
+          <div class="photo-inner">
+            <img src="assets/hanan.jpg" alt="Hanan Khan">
+          </div>
+        </div>
+        <div class="badge-float"><span class="n">AI</span> RAG Assistant &amp; Agentic AI @ Aldar</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Who I Am</span>
+        <h2>Not a job title. A way of paying attention.</h2>
+      </div>
+      <div class="about-grid reveal">
+        <div>
+          <p>I got into product management by accident and stayed for the obsession: watching someone use something I helped build, and seeing the exact moment it clicks — or doesn't. That moment is where I live.</p>
+          <p>I've spent my career moving between very different worlds — luxury real estate, SaaS hiring platforms, fintech, casino gaming — but the job is always the same underneath: sit with the customer's confusion, argue for what they actually need (not what's easiest to ship), and rally engineers, designers and executives around a version of the product that earns trust.</p>
+          <p>Lately I'm most alive working on AI — not as a buzzword, but as the thing that finally lets a product answer a customer the way a great salesperson would, at 2am, in seconds. That's what I'm building into Aldar's digital ecosystem right now.</p>
+        </div>
+        <div class="comp-grid">
+          <div class="comp-chip"><span class="ic">◆</span> Product Strategy &amp; Vision</div>
+          <div class="comp-chip"><span class="ic">◆</span> Discovery &amp; Customer Research</div>
+          <div class="comp-chip"><span class="ic">◆</span> Roadmaps &amp; Prioritization</div>
+          <div class="comp-chip"><span class="ic">◆</span> Product Lifecycle Mgmt</div>
+          <div class="comp-chip"><span class="ic">◆</span> Go-to-Market Strategy</div>
+          <div class="comp-chip"><span class="ic">◆</span> Stakeholder Management</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PHILOSOPHY -->
+  <section id="philosophy">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">How I Work</span>
+        <h2>What I actually believe about building products</h2>
+      </div>
+      <div class="phil-grid">
+        <div class="phil-card reveal">
+          <span class="phil-mark">The customer is not a persona</span>
+          <p>Personas are a starting guess. I'd rather sit in on ten real sales calls than read one slide of assumptions — the confusion people show you is more honest than the answers they give in interviews.</p>
+        </div>
+        <div class="phil-card reveal">
+          <span class="phil-mark">Immersive isn't a gimmick</span>
+          <p>VR tours and immersive web experiences only earn their place if they shorten the distance between "I'm curious" and "I'm confident." I've killed features that were impressive and kept ones that were just useful.</p>
+        </div>
+        <div class="phil-card reveal">
+          <span class="phil-mark">AI should feel like help, not a demo</span>
+          <p>The bar for an AI assistant isn't "does it work" — it's "would I trust it with a $2M decision?" I build for that bar, which usually means saying no to the flashy version.</p>
+        </div>
+        <div class="phil-card reveal">
+          <span class="phil-mark">Numbers earn the argument</span>
+          <p>I love a good instinct, but in the room with executives, GA4 and Mixpanel do the persuading. Data doesn't replace judgment — it's what makes judgment hard to dismiss.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">The Journey</span>
+        <h2>Where I've built things</h2>
+        <p>Four very different industries, one habit I never broke: get obsessed with the customer before you touch the roadmap.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <div class="tl-head">
+            <span class="tl-role">Sr. Product Manager Group – Digital Futures</span>
+            <span class="tl-company">Aldar Properties</span>
+            <span class="tl-dates">May '25 — Present</span>
+          </div>
+          <div class="tl-card">
+            <p class="tl-reflect">"This is where I fell for AI — not as a feature, but as the thing that finally lets a customer get a real answer at midnight."</p>
+            <ul>
+              <li>Own the product vision, strategy and portfolio for Aldar's digital ecosystem — <b>Aldar Properties Website, Live Aldar Mobile App</b> and <b>World of Aldar</b>.</li>
+              <li>Leading development of AI-driven products including a <b>RAG-based AI Assistant</b>, intelligent property recommendations, and Agentic AI solutions.</li>
+              <li>Own diverse digital portfolio across Off-Plan, Residential Leasing, Commercial Leasing, and Retail Listings.</li>
+              <li>Lead the Product Management function across multiple streams, guiding Product Owners, UX, and delivery teams.</li>
+              <li>Drive data-informed decisions using GA4, Mixpanel and business KPIs to optimise acquisition, conversion and retention.</li>
+            </ul>
+            <div class="chips">
+              <span class="chip">GA4</span><span class="chip">Mixpanel</span><span class="chip">Optimizely</span><span class="chip">Agentic AI</span><span class="chip">RAG</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <div class="tl-head">
+            <span class="tl-role">Sr. Product Manager</span>
+            <span class="tl-company">DAMAC (Prop-tech)</span>
+            <span class="tl-dates">Sep '23 — May '25</span>
+          </div>
+          <div class="tl-card">
+            <p class="tl-reflect">"I got to turn 'walking into a sales center' into 'walking through your future home' — VR that actually earned its place in the sale."</p>
+            <ul>
+              <li>Led product strategy and end-to-end lifecycle for the <b>DAMAC Properties E-commerce Website</b> and <b>DAMAC Living Mobile App</b> (iOS &amp; Android).</li>
+              <li>Pioneered <b>Virtual Reality Tours (VR)</b>, an immersive web experience, and a Metaverse experience for sales centers and malls.</li>
+              <li>Led Salesforce CRM integration enabling real-time inventory, pricing, and property discovery.</li>
+              <li>Increased digital payment completion by <b>20–30%</b> through the DAMAC Living Owner's App.</li>
+              <li>Delivered an AI-powered chatbot to enhance customer engagement and lead generation.</li>
+            </ul>
+            <div class="chips">
+              <span class="chip">Salesforce CRM</span><span class="chip">VR / Immersive</span><span class="chip">Contentful</span><span class="chip">A/B Testing</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <div class="tl-head">
+            <span class="tl-role">Sr. Product Manager — SaaS</span>
+            <span class="tl-company">Bayt.com (Talentera)</span>
+            <span class="tl-dates">Oct '20 — Sep '23</span>
+          </div>
+          <div class="tl-card">
+            <p class="tl-reflect">"Watching recruiters go from drowning in spreadsheets to trusting a shortlist the system built for them — that's the addiction of good product work."</p>
+            <ul>
+              <li>Owned strategy and roadmap for <b>Talentera</b>, Bayt.com's B2B SaaS Applicant Tracking System, across the MENA region.</li>
+              <li>Led transition from single-tenant to <b>multi-tenant enterprise architecture</b> with hierarchical sub-accounts.</li>
+              <li>Introduced a free-trial model driving <b>25% growth</b> in B2B trial sign-ups over 6 months.</li>
+              <li>Delivered enterprise solutions for strategic clients including Dubai Health and Expo 2020 Dubai.</li>
+            </ul>
+            <div class="chips">
+              <span class="chip">Multi-tenant SaaS</span><span class="chip">ATS</span><span class="chip">Enterprise</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <div class="tl-head">
+            <span class="tl-role">Product Manager</span>
+            <span class="tl-company">MGM Macau — Gaming</span>
+            <span class="tl-dates">Jan '17 — Sep '20</span>
+          </div>
+          <div class="tl-card">
+            <p class="tl-reflect">"A casino floor taught me more about real-time systems and trust than any textbook — every chip, every second, had to be accounted for."</p>
+            <ul>
+              <li>Led strategy and delivery of WDTS' patented <b>RFID-based Chip Ownership &amp; Inventory Management System</b>.</li>
+              <li>Automated casino cage and table operations end-to-end — ownership assignment, reconciliation, cashier transactions, audit-ready reporting.</li>
+              <li>Reduced fraud significantly through real-time chip authentication and full transaction traceability.</li>
+              <li>Loyalty and rewards initiatives contributed to an <b>18–20%</b> improvement in repeat player engagement.</li>
+            </ul>
+            <div class="chips">
+              <span class="chip">RFID</span><span class="chip">Enterprise Platform</span><span class="chip">Global Teams</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-item reveal">
+          <div class="tl-dot"></div>
+          <div class="tl-head">
+            <span class="tl-role">Foundational Experience</span>
+            <span class="tl-dates">2009 — 2017</span>
+          </div>
+          <div class="foundational">
+            <div><span>SaaS Product Owner — Uno Minda, India</span><b>Jan '16 – Dec '16</b></div>
+            <div><span>Product Owner — Mobikwik (FinTech), India</span><b>Sep '14 – Dec '15</b></div>
+            <div><span>Business Analyst — Hike Messenger, India</span><b>Jul '11 – Aug '14</b></div>
+            <div><span>Software Quality Engineer — Rocetalk, India</span><b>May '09 – Jun '12</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASE STUDIES -->
+  <section id="work">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Work I'm Proud Of</span>
+        <h2>A few things I'd walk you through in an interview</h2>
+        <p>Photo slots below are ready for real screenshots — send them over and I'll drop them straight in.</p>
+      </div>
+      <div class="case-grid">
+
+        <!-- Replace this placeholder div's contents with: <img src="assets/case-aldar.jpg" alt="World of Aldar"> -->
+        <div class="case-card reveal">
+          <div class="case-visual img-placeholder"><div class="cam">🖼</div><span>Add a screenshot of World of Aldar</span></div>
+          <div class="case-body">
+            <span class="case-tag">Aldar Properties</span>
+            <h3>World of Aldar — Immersive Web Experience</h3>
+            <p>Conceptualized and launched an immersive property discovery experience embedded into the Aldar Properties website, plus a physical HNW sales experience.</p>
+            <span class="case-metric">+15% <span>Luxury Property Conversion</span></span>
+          </div>
+        </div>
+
+        <!-- Replace this placeholder div's contents with: <img src="assets/case-damac.jpg" alt="DAMAC Living app"> -->
+        <div class="case-card reveal">
+          <div class="case-visual img-placeholder"><div class="cam">🖼</div><span>Add a screenshot of the DAMAC Living app</span></div>
+          <div class="case-body">
+            <span class="case-tag">DAMAC Living</span>
+            <h3>Owner's App — VR Tours &amp; In-App Payments</h3>
+            <p>Delivered immersive VR tours and Metaverse experiences, plus seamless in-app payment capability for property owners.</p>
+            <span class="case-metric">+20–30% <span>Digital Payment Completion</span></span>
+          </div>
+        </div>
+
+        <!-- Replace this placeholder div's contents with: <img src="assets/case-talentera.jpg" alt="Talentera ATS"> -->
+        <div class="case-card reveal">
+          <div class="case-visual img-placeholder"><div class="cam">🖼</div><span>Add a screenshot of Talentera</span></div>
+          <div class="case-body">
+            <span class="case-tag">Bayt.com</span>
+            <h3>Talentera — Multi-Tenant ATS Platform</h3>
+            <p>Led transition to enterprise multi-tenant architecture and introduced a free-trial, "try-before-you-buy" onboarding model.</p>
+            <span class="case-metric">+25% <span>B2B Trial Sign-ups (6 mo)</span></span>
+          </div>
+        </div>
+
+        <!-- Replace this placeholder div's contents with: <img src="assets/case-mgm.jpg" alt="MGM Macau RFID system"> -->
+        <div class="case-card reveal">
+          <div class="case-visual img-placeholder"><div class="cam">🖼</div><span>Add a photo from MGM Macau</span></div>
+          <div class="case-body">
+            <span class="case-tag">MGM Macau</span>
+            <h3>RFID Chip Ownership &amp; Inventory System</h3>
+            <p>Pioneered a patented RFID platform automating chip ownership tracking and real-time inventory reconciliation.</p>
+            <span class="case-metric">+18–20% <span>Repeat Player Engagement</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ACHIEVEMENTS -->
+  <section id="achievements">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Impact</span>
+        <h2>Achievements</h2>
+      </div>
+      <div class="ach-grid">
+        <div class="ach-card reveal"><b>15%</b><span>Luxury conversion lift — Aldar</span></div>
+        <div class="ach-card reveal"><b>20–30%</b><span>Payment completion — DAMAC</span></div>
+        <div class="ach-card reveal"><b>25%</b><span>B2B trial growth — Bayt.com</span></div>
+        <div class="ach-card reveal"><b>18–20%</b><span>Player engagement — MGM</span></div>
+        <div class="ach-card reveal"><b>8–10%</b><span>Retention lift — Mobikwik</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Toolkit</span>
+        <h2>Skills &amp; Tools</h2>
+      </div>
+      <div class="skill-cols">
+        <div class="skill-col reveal">
+          <h4>Platform / Growth</h4>
+          <ul>
+            <li>Mobile Apps (iOS &amp; Android)</li>
+            <li>Websites &amp; E-commerce</li>
+            <li>Enterprise Platforms</li>
+            <li>Customer Portals</li>
+            <li>Omnichannel Experiences</li>
+          </ul>
+        </div>
+        <div class="skill-col reveal">
+          <h4>Growth &amp; Analytics</h4>
+          <ul>
+            <li>Customer Journey Mapping</li>
+            <li>Funnel Optimization</li>
+            <li>Conversion Rate Optimization</li>
+            <li>Product Analytics (GA4, Mixpanel)</li>
+            <li>A/B Testing &amp; Experimentation</li>
+          </ul>
+        </div>
+        <div class="skill-col reveal">
+          <h4>CRM &amp; Delivery</h4>
+          <ul>
+            <li>Salesforce</li>
+            <li>Microsoft Dynamics 365</li>
+            <li>Oracle Fusion</li>
+            <li>Jira / MS Azure</li>
+            <li>Agile Product Delivery</li>
+          </ul>
+        </div>
+        <div class="skill-col reveal">
+          <h4>Design &amp; Prototyping</h4>
+          <ul>
+            <li>Figma</li>
+            <li>Adobe XD</li>
+            <li>Axure RP</li>
+            <li>Contentful</li>
+            <li>Optimizely</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Background</span>
+        <h2>Education &amp; Certifications</h2>
+      </div>
+      <div class="edu-grid">
+        <div class="edu-card reveal">
+          <h4>Education</h4>
+          <div><b>Masters in Computer Application</b>IP University, India</div>
+          <div><b>Bachelors in Computer Application</b>IP University, India</div>
+        </div>
+        <div class="edu-card reveal">
+          <h4>Certifications</h4>
+          <div><b>CSPO</b>Certified Scrum Product Owner</div>
+          <div><b>SAFe 6.0</b>Certified Product Manager</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <span class="eyebrow">Let's Connect</span>
+    <h2>Ready to build the next great product experience?</h2>
+    <div class="contact-row">
+      <a href="mailto:hanank1784@gmail.com">✉ hanank1784@gmail.com</a>
+      <a href="tel:+971545388689">☎ +971-545-388-689</a>
+      <a href="https://linkedin.com/in/hanankhan" target="_blank" rel="noopener">in linkedin.com/in/hanankhan</a>
+    </div>
+    <p class="fine">© 2026 Hanan Khan — Senior Product Manager. Crafted with care.</p>
+  </div>
+</footer>
+
+<script>
+  // mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const navlinks = document.getElementById('navlinks');
+  navToggle.addEventListener('click', () => navlinks.classList.toggle('open'));
+  navlinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navlinks.classList.remove('open')));
+
+  // scroll reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  // safety net: never leave content permanently invisible
+  setTimeout(() => document.querySelectorAll('.reveal').forEach(el => el.classList.add('in')), 4000);
+
+  // ambient particle background
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles = [];
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  function initParticles(){
+    particles = Array.from({length: Math.min(70, Math.floor(w/22))}, () => ({
+      x: Math.random()*w, y: Math.random()*h,
+      r: Math.random()*1.6+0.4,
+      vy: Math.random()*0.25+0.05,
+      vx: (Math.random()-0.5)*0.15,
+      a: Math.random()*0.5+0.1
+    }));
+  }
+  function tick(){
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle = 'rgba(212,175,106,';
+    particles.forEach(p => {
+      p.y -= p.vy; p.x += p.vx;
+      if (p.y < -10) { p.y = h+10; p.x = Math.random()*w; }
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(212,175,106,${p.a})`;
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fill();
+    });
+    requestAnimationFrame(tick);
+  }
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+  resize(); initParticles(); tick();
+</script>
+
+</body>
+</html>
