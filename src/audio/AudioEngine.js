@@ -14,11 +14,17 @@ export default class AudioEngine {
     this.scheduledNodes = [];
     this.analyser = null;
     this.analyserData = null;
+    this._keepAliveOsc = null;
   }
 
   async init() {
     if (this.ctx) return;
     this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+    if (this.ctx.state === 'suspended') {
+      await this.ctx.resume();
+    }
+
     this.masterGain = this.ctx.createGain();
     this.masterGain.gain.value = 0;
 
@@ -29,9 +35,21 @@ export default class AudioEngine {
 
     this.reverb = await this._createReverb();
 
-    this.reverb.connect(this.masterGain);
+    this.reverb._output.connect(this.masterGain);
     this.masterGain.connect(this.analyser);
     this.analyser.connect(this.ctx.destination);
+
+    this._startKeepAlive();
+  }
+
+  _startKeepAlive() {
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    gain.gain.value = 0;
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start();
+    this._keepAliveOsc = osc;
   }
 
   async _createReverb() {
@@ -67,12 +85,9 @@ export default class AudioEngine {
 
   _connectToReverb(node) {
     node.connect(this.reverb);
-    if (this.reverb._output) {
-      this.reverb._output.connect(this.masterGain);
-    }
   }
 
-  _playNote(freq, time, dur, vel = 0.15) {
+  _playNote(freq, time, dur, vel = 0.4) {
     const osc = this.ctx.createOscillator();
     const osc2 = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
@@ -106,7 +121,7 @@ export default class AudioEngine {
     this.scheduledNodes.push(osc, osc2);
   }
 
-  _createPad(freq, time, dur, vol = 0.08) {
+  _createPad(freq, time, dur, vol = 0.2) {
     const detunes = [-6, -2, 2, 6, 10];
     detunes.forEach((d, i) => {
       const osc = this.ctx.createOscillator();
@@ -141,7 +156,7 @@ export default class AudioEngine {
     });
   }
 
-  _createRainTexture(time, dur, vol = 0.04) {
+  _createRainTexture(time, dur, vol = 0.1) {
     const bufferSize = this.ctx.sampleRate * 2;
     const buffer = this.ctx.createBuffer(2, bufferSize, this.ctx.sampleRate);
     for (let ch = 0; ch < 2; ch++) {
@@ -180,7 +195,7 @@ export default class AudioEngine {
     this.scheduledNodes.push(source);
   }
 
-  _createBreathingTexture(time, dur, vol = 0.05) {
+  _createBreathingTexture(time, dur, vol = 0.12) {
     const bufferSize = this.ctx.sampleRate * 2;
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -267,11 +282,11 @@ export default class AudioEngine {
     });
 
     if (p.hasRain) {
-      this._createRainTexture(now, dur, 0.03);
+      this._createRainTexture(now, dur, 0.1);
     }
 
     if (p.hasBreathing) {
-      this._createBreathingTexture(now, dur, 0.04);
+      this._createBreathingTexture(now, dur, 0.12);
     }
 
     this._createPad(p.chords[0][0] * 0.25, now, dur, p.padVolume * 0.4);
@@ -363,6 +378,10 @@ export default class AudioEngine {
 
   destroy() {
     this.stop();
+    if (this._keepAliveOsc) {
+      try { this._keepAliveOsc.stop(); } catch {}
+      this._keepAliveOsc = null;
+    }
     if (this.ctx) {
       this.ctx.close();
       this.ctx = null;
