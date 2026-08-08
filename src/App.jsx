@@ -14,6 +14,7 @@ import { getTrackForMood } from './data/musicLibrary';
 import { signInWithGoogle, isAuthenticated } from './utils/auth';
 import { saveSession } from './utils/storage';
 import AudioEngine from './audio/AudioEngine';
+import { initNative, haptic } from './utils/native';
 
 const SCREENS = {
   WELCOME: 'welcome',
@@ -42,6 +43,7 @@ export default function App() {
   const sessionRef = useRef({});
 
   useEffect(() => {
+    initNative();
     audioEngineRef.current = new AudioEngine();
     return () => {
       audioEngineRef.current?.destroy();
@@ -59,6 +61,7 @@ export default function App() {
   };
 
   const handleSelectMood = (selectedMood) => {
+    haptic();
     setMood(selectedMood);
     const q = getRandomQuote(selectedMood);
     setQuote(q);
