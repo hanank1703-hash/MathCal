@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 const fadeUp = {
@@ -20,7 +21,18 @@ function GoogleIcon() {
   );
 }
 
-export default function WelcomeScreen({ onLogin }) {
+export default function WelcomeScreen({ onLogin, isLoading }) {
+  const [error, setError] = useState(null);
+
+  const handleClick = async () => {
+    setError(null);
+    try {
+      await onLogin();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <div className="screen">
       <div className="screen-bg">
@@ -70,12 +82,34 @@ export default function WelcomeScreen({ onLogin }) {
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          onClick={onLogin}
+          onClick={handleClick}
           whileTap={{ scale: 0.97 }}
+          disabled={isLoading}
         >
-          <GoogleIcon />
-          Continue with Google
+          {isLoading ? (
+            <div className="loading-spinner" />
+          ) : (
+            <>
+              <GoogleIcon />
+              Continue with Google
+            </>
+          )}
         </motion.button>
+
+        {error && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{
+              marginTop: '1rem',
+              fontSize: '0.85rem',
+              color: '#e87878',
+              maxWidth: '300px',
+            }}
+          >
+            {error}
+          </motion.p>
+        )}
       </div>
     </div>
   );

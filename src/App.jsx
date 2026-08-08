@@ -55,8 +55,9 @@ export default function App() {
     try {
       await signInWithGoogle();
       setScreen(SCREENS.MOOD);
-    } catch {
+    } catch (err) {
       setIsLoggingIn(false);
+      throw err;
     }
   };
 
