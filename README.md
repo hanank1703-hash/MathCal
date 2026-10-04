@@ -50,3 +50,10 @@ browser dev console on the game page and run:
 ```js
 localStorage.removeItem('neonMathRush.v1'); location.reload();
 ```
+
+## 🔮 Celestial Tarot
+
+A separate mini-site lives in **`tarot/`** — open `tarot/index.html`. Ask a
+question, pick three cards from a rotating galaxy of 78, and reveal your
+Past / Present / Future reading. Static HTML/CSS/JS, no install, nothing is
+sent anywhere. For reflection and entertainment only.

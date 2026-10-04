@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Celestial Tarot · Ask the Universe</title>
+<meta name="description" content="Ask a question, wander a galaxy of cards, choose three and reveal what the universe has to say.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="stars" aria-hidden="true"></canvas>
+<div class="nebula" aria-hidden="true"></div>
+
+<main>
+  <!-- 1 · ASK -->
+  <section id="viewAsk" class="view active" aria-labelledby="title">
+    <div class="ask-wrap">
+      <p class="eyebrow">✦ Celestial Tarot ✦</p>
+      <h1 id="title">Ask the Universe</h1>
+      <p class="sub">Hold your question in your heart, then write it below.</p>
+      <form id="askForm" autocomplete="off">
+        <label class="sr" for="question">Your question</label>
+        <input id="question" type="text" maxlength="160" placeholder="What do I need to know about…?" />
+        <p id="askError" class="error" role="alert" hidden>Whisper your question to the stars first…</p>
+        <button type="submit" class="btn primary">Enter the Galaxy</button>
+      </form>
+      <p class="fine">For reflection and entertainment only.</p>
+    </div>
+  </section>
+
+  <!-- 2 · GALAXY -->
+  <section id="viewGalaxy" class="view" aria-labelledby="pickHint">
+    <div class="galaxy-top">
+      <p class="asked">“<span id="askedText"></span>”</p>
+      <p id="pickHint" class="hint">Choose three cards that call to you · <b id="pickCount">0</b>/3</p>
+    </div>
+    <div id="galaxy" class="galaxy"></div>
+    <div class="tray" id="tray">
+      <div class="slot" data-i="0"><span>Past</span></div>
+      <div class="slot" data-i="1"><span>Present</span></div>
+      <div class="slot" data-i="2"><span>Future</span></div>
+    </div>
+  </section>
+
+  <!-- 3 · REVEAL -->
+  <section id="viewReveal" class="view" aria-labelledby="revealTitle">
+    <h2 id="revealTitle" class="reveal-title">Your Reading</h2>
+    <p class="asked">“<span id="askedText2"></span>”</p>
+    <div id="revealGrid" class="reveal-grid"></div>
+    <div id="summary" class="summary" hidden></div>
+    <div id="actions" class="actions" hidden>
+      <button id="againBtn" class="btn primary" type="button">Ask Again</button>
+      <button id="shareBtn" class="btn ghost" type="button">Copy Reading</button>
+    </div>
+  </section>
+</main>
+
+<div id="shock" class="shock" aria-live="assertive" hidden>
+  <div class="shock-inner">
+    <p class="shock-eyebrow">The cards have spoken</p>
+    <p id="shockText"></p>
+  </div>
+</div>
+
+<script src="cards.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
