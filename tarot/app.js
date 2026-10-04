@@ -3,7 +3,7 @@
 
   const $ = (id) => document.getElementById(id);
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const POSITIONS = ['Past', 'Present', 'Future'];
+  const ROLES = TarotEngine.ROLES;
   const REVERSAL_CHANCE = 0.3;
 
   const state = { phase: 'ASK', question: '', picks: [], deck: [] };
@@ -78,11 +78,16 @@
     e.preventDefault();
     const q = $('question').value.trim();
     if (!q) { $('askError').hidden = false; $('question').focus(); return; }
+    if (TarotEngine.detectSafety(q) === 'crisis') {
+      $('askError').textContent = 'I will not read cards for this. If you are thinking about harming yourself, please contact your local emergency number or a crisis line right now. You do not have to face this alone.';
+      $('askError').hidden = false;
+      return;
+    }
     $('askError').hidden = true;
     state.question = q;
     startGalaxy();
   });
-  $('question').addEventListener('input', () => { $('askError').hidden = true; });
+  $('question').addEventListener('input', () => { $('askError').hidden = true; $('askError').textContent = 'Whisper your question to the stars first…'; });
 
   // ---------- 2 · galaxy ----------
   const galaxyEl = $('galaxy');
@@ -192,7 +197,7 @@
     await sleep(900);
     cancelAnimationFrame(raf);
     state.phase = 'REVEAL';
-    const hand = state.picks.map((idx, k) => ({ card: state.deck[idx], position: POSITIONS[k], reversed: state.deck[idx].reversed_ }));
+    const hand = state.picks.map((idx) => ({ card: state.deck[idx], reversed: state.deck[idx].reversed_ }));
     await showShock(hand);
     await reveal(hand);
   }
@@ -242,109 +247,68 @@
     $('summary').hidden = true; $('actions').hidden = true;
     grid.innerHTML = hand.map((h, i) => `
       <div class="rcol">
-        <div class="pos">${h.position}</div>
+        <div class="pos">${ROLES[i].name}</div>
         <div class="flip" id="flip${i}"><div class="flip-inner"><div class="back"></div>${faceHTML(h.card, h.reversed)}</div></div>
-        <div class="meaning" id="mean${i}">
-          <h3>${esc(h.card.name)}</h3>
-          <p class="orient">${h.reversed ? 'Reversed' : 'Upright'}</p>
-          <p class="kw">${h.card.keywords.map(esc).join(' · ')}</p>
-          <p class="txt">${esc(positionText(h))}</p>
-        </div>
+        <p class="cname">${esc(h.card.name)}${h.reversed ? ' <em>reversed</em>' : ''}</p>
       </div>`).join('');
     show('viewReveal');
     await sleep(900);
     for (let i = 0; i < hand.length; i++) {
       $('flip' + i).classList.add('open');
-      await sleep(1100);
-      $('mean' + i).classList.add('show');
-      await sleep(1400);
+      await sleep(1200);
     }
+    const r = TarotEngine.read(hand, state.question);
     const s = $('summary');
-    s.innerHTML = summaryHTML(hand);
+    s.innerHTML = reportHTML(r);
+    s.className = 'summary ' + r.cls;
     s.hidden = false;
     $('actions').hidden = false;
     state.phase = 'DONE';
-    state.reading = plainReading(hand);
-    s.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
+    state.reading = plainReading(r);
+    s.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
   }
 
-  const FRAMING = {
-    Past: 'Behind you: ',
-    Present: 'Right now: ',
-    Future: 'Ahead of you: ',
-  };
-  function positionText(h) {
-    return FRAMING[h.position] + (h.reversed ? h.card.reversed : h.card.upright);
+  // ---------- report (verdict first, then the story) ----------
+  function reportHTML(r) {
+    const cards = r.cards.map((c) => `
+      <section class="rc">
+        <h4>Card ${c.num} — ${esc(c.role)}</h4>
+        <p class="cn">${esc(c.name)} · ${c.orient}</p>
+        <p>${esc(c.text)}</p>
+      </section>`).join('');
+    let timing = '';
+    if (r.timing) {
+      timing = `<section class="rc"><h4>Timing</h4>
+        ${r.timing.outcome ? `<p class="tl"><span>Outcome</span><b>${esc(r.timing.outcome)}</b></p>` : ''}
+        <p class="tl"><span>Timing</span><b>${esc(r.timing.label)}</b></p>
+        <p>${esc(r.timing.text)}</p></section>`;
+    }
+    const note = r.safety ? `<p class="safety">${esc(TarotEngine.safetyMessage(r.safety))}</p>` : '';
+    return `
+      <p class="vlabel">${r.symbolic ? 'Symbolic verdict' : 'Verdict'}</p>
+      <h3 class="vhead">${esc(r.verdict)}</h3>
+      <div class="strength">
+        <span>Reading Strength</span><b>${r.strength}%</b>
+        <div class="bar" role="img" aria-label="Reading strength ${r.strength} percent"><i style="width:${r.strength}%"></i></div>
+      </div>
+      <p class="vline">${esc(r.oneLine)}</p>
+      ${note}
+      ${cards}
+      <section class="rc why"><h4>Why this verdict</h4><p>${esc(r.why)}</p></section>
+      ${timing}
+      <p class="disc">Reading Strength shows how strongly the three cards support the verdict. It is not the probability that the event will happen. For reflection and entertainment only.</p>`;
   }
-
-  // ---------- combined reading ----------
-  const TOPICS = [
-    ['love', /\b(love|relationship|partner|boyfriend|girlfriend|crush|ex|marriage|marry|dating|romance|heart|date)\b/i, 'matters of the heart'],
-    ['career', /\b(job|career|work|boss|promotion|business|interview|study|exam|school|project|goal)\b/i, 'your work and ambitions'],
-    ['money', /\b(money|finance|financial|debt|salary|invest|rich|buy|house|savings|income)\b/i, 'money and security'],
-    ['health', /\b(health|healing|sick|illness|body|anxiety|stress|sleep|mental|wellbeing)\b/i, 'your wellbeing'],
-  ];
-  function detectTopic(q) {
-    for (const [key, re, label] of TOPICS) if (re.test(q)) return { key, label };
-    return { key: 'general', label: 'this situation' };
-  }
-  const isYesNo = (q) => /^\s*(will|should|can|could|do|does|did|is|are|am|would|shall|have|has|was)\b/i.test(q);
-
-  // Favourability of a card in its drawn orientation.
-  function effTone(h) {
-    const t = h.card.tone;
-    if (!h.reversed) return t;
-    return t === 0 ? -0.25 : -t * 0.5; // reversed good = delayed, reversed bad = easing
-  }
-  const adviceOf = (h) => (h.reversed ? h.card.adviceRev : h.card.advice);
-
-  function verdict(hand, yesNo) {
-    // Past counts least, the Future (outcome) counts most.
-    const score = effTone(hand[0]) * 0.5 + effTone(hand[1]) * 1 + effTone(hand[2]) * 1.5;
-    let key, head, line;
-    if (score >= 1.5) { key = 'good'; head = yesNo ? 'Yes' : 'A strongly favourable outlook'; line = 'The cards line up in your favour. Move ahead with confidence.'; }
-    else if (score >= 0.5) { key = 'good'; head = yesNo ? 'Leaning yes' : 'A favourable outlook'; line = 'The outlook is positive, so act on it, but stay attentive to the points below.'; }
-    else if (score > -0.5) { key = 'mixed'; head = yesNo ? 'It depends on you' : 'A mixed outlook'; line = 'Nothing is settled. The result will follow the choices you make now.'; }
-    else if (score > -1.5) { key = 'caution'; head = yesNo ? 'Not yet' : 'Proceed with caution'; line = 'There are obstacles. Prepare, adjust the plan and revisit this before committing.'; }
-    else { key = 'caution'; head = yesNo ? 'Probably not as things stand' : 'A challenging outlook'; line = 'The current path is difficult. Change something important before pushing ahead.'; }
-    return { key, head, line, score };
-  }
-
-  function readingData(hand) {
-    const [p, n, f] = hand;
-    const topic = detectTopic(state.question);
-    const v = verdict(hand, isYesNo(state.question));
-    const steps = [
-      ['Now', n, adviceOf(n)],
-      ['Next', f, adviceOf(f)],
-      ['From your past', p, adviceOf(p)],
-    ];
-    const worst = hand.slice().sort((a, b) => effTone(a) - effTone(b))[0];
-    const watch = effTone(worst) < 0
-      ? `Be careful with ${worst.card.keywords[0]} (${worst.card.name}${worst.reversed ? ', reversed' : ''}).`
-      : null;
-    const why = `${p.card.name} (${p.position.toLowerCase()}) shows ${p.card.keywords[0]} shaped this. ${n.card.name} says ${n.card.keywords[0]} is what matters now${n.reversed ? ', though it is blocked or turned inward' : ''}. ${f.card.name} points to ${f.card.keywords[0]} as where this is heading${f.reversed ? ', but with delays or a lesson to learn first' : ''}.`;
-    return { topic, v, steps, watch, why };
-  }
-
-  function summaryHTML(hand) {
-    const d = readingData(hand);
-    return `<h3>The Universe Says</h3>
-      <div class="verdict ${d.v.key}"><span class="vlabel">${isYesNo(state.question) ? 'Answer' : 'Outlook'}</span><span class="vhead">${esc(d.v.head)}</span></div>
-      <p class="vline">${esc(d.v.line)}</p>
-      <p class="why">${esc(d.why)}</p>
-      <h4>What to do</h4>
-      <ol class="steps">${d.steps.map(([label, h, text]) => `<li><b>${label} · ${esc(h.card.name)}</b><span>${esc(text)}</span></li>`).join('')}</ol>
-      ${d.watch ? `<p class="watch">${esc(d.watch)}</p>` : ''}
-      <p class="disc">For reflection and entertainment only. Not a substitute for professional advice.</p>`;
-  }
-  function plainReading(hand) {
-    const d = readingData(hand);
-    return `Question: ${state.question}\n\n` +
-      hand.map((h) => `${h.position}: ${h.card.name} (${h.reversed ? 'Reversed' : 'Upright'})\n${positionText(h)}`).join('\n\n') +
-      `\n\n${isYesNo(state.question) ? 'Answer' : 'Outlook'}: ${d.v.head}. ${d.v.line}\n\n${d.why}\n\nWhat to do:\n` +
-      d.steps.map(([l, h, t], i) => `${i + 1}. ${l} (${h.card.name}): ${t}`).join('\n') +
-      (d.watch ? `\n\n${d.watch}` : '');
+  function plainReading(r) {
+    return [
+      `Question: ${state.question}`,
+      `VERDICT: ${r.verdict}`,
+      `READING STRENGTH: ${r.strength}%`,
+      r.oneLine,
+      ...r.cards.map((c) => `CARD ${c.num} — ${c.role.toUpperCase()}: ${c.name} (${c.orient})\n${c.text}`),
+      `WHY THIS VERDICT\n${r.why}`,
+      r.timing ? `TIMING\n${r.timing.outcome ? 'OUTCOME: ' + r.timing.outcome + '\n' : ''}TIMING: ${r.timing.label}\n${r.timing.text}` : '',
+      r.safety ? TarotEngine.safetyMessage(r.safety) : '',
+    ].filter(Boolean).join('\n\n');
   }
 
   // ---------- actions ----------

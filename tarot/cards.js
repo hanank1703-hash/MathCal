@@ -156,6 +156,7 @@ function buildDeck() {
         arcana: 'minor',
         suit: suit.name,
         suitIndex: s,
+        rank: r,
         numeral: r === 0 ? 'A' : r < 10 ? String(r + 1) : rank === 'Knight' ? 'Kn' : rank[0],
         keywords: [kw, suit.kw[r % 2]],
         upright: up.replace('{t}', suit.theme),
