@@ -286,39 +286,65 @@
   ];
   function detectTopic(q) {
     for (const [key, re, label] of TOPICS) if (re.test(q)) return { key, label };
-    return { key: 'general', label: 'the path before you' };
+    return { key: 'general', label: 'this situation' };
+  }
+  const isYesNo = (q) => /^\s*(will|should|can|could|do|does|did|is|are|am|would|shall|have|has|was)\b/i.test(q);
+
+  // Favourability of a card in its drawn orientation.
+  function effTone(h) {
+    const t = h.card.tone;
+    if (!h.reversed) return t;
+    return t === 0 ? -0.25 : -t * 0.5; // reversed good = delayed, reversed bad = easing
+  }
+  const adviceOf = (h) => (h.reversed ? h.card.adviceRev : h.card.advice);
+
+  function verdict(hand, yesNo) {
+    // Past counts least, the Future (outcome) counts most.
+    const score = effTone(hand[0]) * 0.5 + effTone(hand[1]) * 1 + effTone(hand[2]) * 1.5;
+    let key, head, line;
+    if (score >= 1.5) { key = 'good'; head = yesNo ? 'Yes' : 'A strongly favourable outlook'; line = 'The cards line up in your favour. Move ahead with confidence.'; }
+    else if (score >= 0.5) { key = 'good'; head = yesNo ? 'Leaning yes' : 'A favourable outlook'; line = 'The outlook is positive, so act on it, but stay attentive to the points below.'; }
+    else if (score > -0.5) { key = 'mixed'; head = yesNo ? 'It depends on you' : 'A mixed outlook'; line = 'Nothing is settled. The result will follow the choices you make now.'; }
+    else if (score > -1.5) { key = 'caution'; head = yesNo ? 'Not yet' : 'Proceed with caution'; line = 'There are obstacles. Prepare, adjust the plan and revisit this before committing.'; }
+    else { key = 'caution'; head = yesNo ? 'Probably not as things stand' : 'A challenging outlook'; line = 'The current path is difficult. Change something important before pushing ahead.'; }
+    return { key, head, line, score };
   }
 
-  function summaryParts(hand) {
+  function readingData(hand) {
     const [p, n, f] = hand;
     const topic = detectTopic(state.question);
-    const parts = [];
-    parts.push(`You asked about ${topic.label}. The cards trace a story from <b>${esc(p.card.name)}</b> through <b>${esc(n.card.name)}</b> toward <b>${esc(f.card.name)}</b>.`);
-    parts.push(`${esc(p.card.name)} shows the roots of this situation: ${esc(p.card.keywords[0])} and ${esc(p.card.keywords[1])} shaped how you got here. Today, ${esc(n.card.name)} brings ${esc(n.card.keywords[0])} to the foreground${n.reversed ? ', though turned inward, so look at what is blocked or hidden' : ''}.`);
-    const majors = hand.filter((h) => h.card.arcana === 'major').length;
-    const rev = hand.filter((h) => h.reversed).length;
-    const bits = [];
-    if (majors >= 2) bits.push('Several Major Arcana point to a significant, possibly life-shaping moment');
-    else if (majors === 0) bits.push('With only Minor Arcana, this is about everyday choices more than fate, so your actions matter most');
-    const suits = {};
-    hand.forEach((h) => { if (h.card.suit) suits[h.card.suit] = (suits[h.card.suit] || 0) + 1; });
-    const top = Object.entries(suits).sort((a, b) => b[1] - a[1])[0];
-    if (top && top[1] >= 2) bits.push(`the repeated ${top[0]} stress ${SUITS.find((s) => s.name === top[0]).theme}`);
-    if (rev >= 2) bits.push('the reversals suggest pausing to look inward before acting');
-    else if (rev === 0) bits.push('every card standing upright shows energy flowing freely');
-    if (bits.length) parts.push(bits.join('; ').replace(/^./, (c) => c.toUpperCase()) + '.');
-    parts.push(`Moving forward, let <b>${esc(f.card.keywords[0])}</b> guide you${f.reversed ? ', and watch for the shadow side of that lesson' : ''}. ${esc(f.card.name)} is not a fixed fate, only the direction you are currently facing.`);
-    return parts;
+    const v = verdict(hand, isYesNo(state.question));
+    const steps = [
+      ['Now', n, adviceOf(n)],
+      ['Next', f, adviceOf(f)],
+      ['From your past', p, adviceOf(p)],
+    ];
+    const worst = hand.slice().sort((a, b) => effTone(a) - effTone(b))[0];
+    const watch = effTone(worst) < 0
+      ? `Be careful with ${worst.card.keywords[0]} (${worst.card.name}${worst.reversed ? ', reversed' : ''}).`
+      : null;
+    const why = `${p.card.name} (${p.position.toLowerCase()}) shows ${p.card.keywords[0]} shaped this. ${n.card.name} says ${n.card.keywords[0]} is what matters now${n.reversed ? ', though it is blocked or turned inward' : ''}. ${f.card.name} points to ${f.card.keywords[0]} as where this is heading${f.reversed ? ', but with delays or a lesson to learn first' : ''}.`;
+    return { topic, v, steps, watch, why };
   }
+
   function summaryHTML(hand) {
-    return '<h3>The Universe Says</h3>' + summaryParts(hand).map((t) => `<p>${t}</p>`).join('') +
-      '<p class="disc">For reflection and entertainment only. Not a substitute for professional advice.</p>';
+    const d = readingData(hand);
+    return `<h3>The Universe Says</h3>
+      <div class="verdict ${d.v.key}"><span class="vlabel">${isYesNo(state.question) ? 'Answer' : 'Outlook'}</span><span class="vhead">${esc(d.v.head)}</span></div>
+      <p class="vline">${esc(d.v.line)}</p>
+      <p class="why">${esc(d.why)}</p>
+      <h4>What to do</h4>
+      <ol class="steps">${d.steps.map(([label, h, text]) => `<li><b>${label} · ${esc(h.card.name)}</b><span>${esc(text)}</span></li>`).join('')}</ol>
+      ${d.watch ? `<p class="watch">${esc(d.watch)}</p>` : ''}
+      <p class="disc">For reflection and entertainment only. Not a substitute for professional advice.</p>`;
   }
   function plainReading(hand) {
-    const strip = (t) => t.replace(/<[^>]+>/g, '');
+    const d = readingData(hand);
     return `Question: ${state.question}\n\n` +
       hand.map((h) => `${h.position}: ${h.card.name} (${h.reversed ? 'Reversed' : 'Upright'})\n${positionText(h)}`).join('\n\n') +
-      '\n\n' + summaryParts(hand).map(strip).join('\n\n');
+      `\n\n${isYesNo(state.question) ? 'Answer' : 'Outlook'}: ${d.v.head}. ${d.v.line}\n\n${d.why}\n\nWhat to do:\n` +
+      d.steps.map(([l, h, t], i) => `${i + 1}. ${l} (${h.card.name}): ${t}`).join('\n') +
+      (d.watch ? `\n\n${d.watch}` : '');
   }
 
   // ---------- actions ----------

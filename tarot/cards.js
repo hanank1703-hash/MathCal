@@ -98,10 +98,55 @@ const RANKS = [
   ['King', 'authority', 'Seasoned authority in {t}. Calm, decisive leadership and a long view bring success.', 'Domination or abuse of power in {t}. Rule yourself before you try to rule the situation.'],
 ];
 
+
+// Outlook (+1 favourable, 0 neutral, -1 challenging) and a concrete action for
+// each card, upright and reversed. Used to build the verdict and next steps.
+const MAJOR_EXTRA = {
+  'The Fool': [1, 'Take the first step now, even before every detail is clear.', 'Pause and list the real risks before you leap.'],
+  'The Magician': [1, 'Use the skills and resources you already have; start the project today.', 'Stop scattering your effort; pick one goal and be honest about your skills.'],
+  'The High Priestess': [0, 'Wait and observe; do not decide until your intuition is clear.', 'Find the missing information; something is being left unsaid.'],
+  'The Empress': [1, 'Invest time and care in this; it is ready to grow.', 'Look after yourself first and unblock your creative energy.'],
+  'The Emperor': [1, 'Set clear rules, a plan and a deadline, then follow them.', 'Loosen your grip, or push back on someone controlling.'],
+  'The Hierophant': [0, 'Follow the proven route or ask an experienced mentor.', 'Trust your own judgement over what is expected of you.'],
+  'The Lovers': [1, 'Make the choice that matches your values and commit to it.', 'Stop avoiding the decision; check whether fear is driving it.'],
+  'The Chariot': [1, 'Set a clear goal and push forward with discipline.', 'Regain direction before you spend more energy.'],
+  'Strength': [1, 'Stay patient and calm; gentle persistence will win.', 'Rebuild confidence with small wins; do not react in anger.'],
+  'The Hermit': [0, 'Take time alone to think, and decide what you really want.', 'Reconnect with people; do not isolate yourself.'],
+  'Wheel of Fortune': [1, 'Move with the change; the timing is turning in your favour.', 'Stop resisting the change; adapt and be patient through the setback.'],
+  'Justice': [1, 'Be honest, read the fine print and make the fair choice.', 'Own your part in this and fix any unfairness.'],
+  'The Hanged Man': [0, 'Pause and look at it from another angle before acting.', 'Stop stalling; decide, or release the sacrifice that is not paying off.'],
+  'Death': [-1, 'Let the finished chapter go so the next one can start.', 'Stop clinging to what is over; plan the change instead of fearing it.'],
+  'Temperance': [1, 'Go step by step and keep a balanced pace.', 'Cut back the excess; restore balance in one area of life.'],
+  'The Devil': [-1, 'Name the habit, fear or dependency holding you, and make a plan to loosen it.', 'Take the first practical step out of what binds you.'],
+  'The Tower': [-1, 'Expect a shake-up; build the new plan on honest foundations.', 'Face the problem now rather than letting it build.'],
+  'The Star': [1, 'Keep going; stay hopeful and take care of yourself.', 'Do one small thing each day that restores your faith.'],
+  'The Moon': [-1, 'Do not decide on partial information; check the facts first.', 'The fog is lifting; act on what has become clear.'],
+  'The Sun': [1, 'Go ahead with confidence and share the good news.', 'Look for what is dimming your confidence; success is close.'],
+  'Judgement': [1, 'Reflect honestly, forgive, and answer the call.', 'Stop judging yourself harshly; accept the lesson and move on.'],
+  'The World': [1, 'Finish what you started and celebrate before the next step.', 'Close the last open loop; one step remains.'],
+};
+const RANK_EXTRA = [
+  [1, 'Act on the new opportunity quickly while it is fresh.', 'Do not force it; prepare and wait for a clearer opening.'],
+  [0, 'Decide between your options and commit; talk it over with the other person involved.', 'Stop postponing the choice; name what you are avoiding.'],
+  [1, 'Work with others, share the effort and celebrate early wins.', 'Clear up miscommunication before moving on.'],
+  [0, 'Consolidate what you have; rest, then protect your foundation.', 'Shake up the routine; stagnation is the real risk.'],
+  [-1, 'Pick your battles; do not spend energy on a fight you cannot win.', 'Make peace and let go of the grudge or the loss.'],
+  [1, 'Accept help and keep moving toward calmer ground.', 'Finish unresolved business before you leave it behind.'],
+  [0, 'Hold your position and commit to one strategy.', 'Cut distractions; stop spreading yourself thin.'],
+  [1, 'Keep up the momentum; steady effort pays off now.', 'Slow down and fix the process instead of rushing.'],
+  [0, 'Push through the last stretch; you are closer than it feels.', 'Ask for support; you do not have to carry it alone.'],
+  [0, 'Complete this cycle and release what weighs you down.', 'Put down the heaviest burden before starting anything new.'],
+  [1, 'Learn, ask questions and start small.', 'Verify before you rely on a rumour or half-formed idea.'],
+  [0, 'Move with energy, but keep your direction clear.', 'Set a steady pace; avoid rushing in or stalling.'],
+  [1, 'Lead calmly and with care, and trust your judgement.', 'Rebuild confidence; avoid people-pleasing or control.'],
+  [1, 'Make the decision and take responsibility for it.', 'Check whether you are controlling; lead by example.'],
+];
+
 function buildDeck() {
   const deck = [];
   MAJOR.forEach(([name, glyph, keywords, up, rev], i) => {
-    deck.push({ id: 'major-' + i, name, arcana: 'major', numeral: ROMAN[i], glyph, keywords, upright: up, reversed: rev, topic: 'general' });
+    deck.push({ id: 'major-' + i, name, arcana: 'major', numeral: ROMAN[i], glyph, keywords, upright: up, reversed: rev, topic: 'general',
+      tone: MAJOR_EXTRA[name][0], advice: MAJOR_EXTRA[name][1], adviceRev: MAJOR_EXTRA[name][2] });
   });
   SUITS.forEach((suit, s) => {
     RANKS.forEach(([rank, kw, up, rev], r) => {
@@ -116,6 +161,7 @@ function buildDeck() {
         upright: up.replace('{t}', suit.theme),
         reversed: rev.replace('{t}', suit.theme),
         topic: suit.topic,
+        tone: RANK_EXTRA[r][0], advice: RANK_EXTRA[r][1], adviceRev: RANK_EXTRA[r][2],
       });
     });
   });

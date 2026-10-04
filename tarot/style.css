@@ -169,6 +169,18 @@ h1 {
   background: rgba(20, 12, 50, .65); border: 1px solid rgba(242, 210, 139, .4); box-shadow: 0 0 40px rgba(107, 63, 212, .35); animation: fadeIn 1s both; }
 .summary h3 { font-family: 'Cinzel', serif; color: var(--gold); letter-spacing: .12em; text-transform: uppercase; font-size: .95rem; margin-bottom: 12px; text-align: center; }
 .summary p { line-height: 1.55; margin-bottom: 10px; font-size: 1.1rem; }
+.verdict { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--gold); background: rgba(242, 210, 139, .08); }
+.verdict.good { box-shadow: 0 0 28px rgba(120, 220, 160, .3); border-color: #8fe3b0; }
+.verdict.mixed { box-shadow: 0 0 28px rgba(242, 210, 139, .3); }
+.verdict.caution { box-shadow: 0 0 28px rgba(255, 150, 130, .3); border-color: #ffa08c; }
+.vlabel { font-family: 'Cinzel', serif; font-size: .7rem; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
+.vhead { font-family: 'Cinzel', serif; font-size: clamp(1.4rem, 5vw, 2rem); color: #fff6d8; text-align: center; }
+.summary .vline { text-align: center; margin: 14px 0 6px; font-style: italic; color: var(--gold); }
+.summary h4 { font-family: 'Cinzel', serif; letter-spacing: .12em; text-transform: uppercase; font-size: .85rem; color: var(--gold); margin: 18px 0 8px; }
+.steps { list-style: none; display: grid; gap: 10px; }
+.steps li { display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; border-left: 2px solid var(--gold); background: rgba(107, 63, 212, .15); border-radius: 0 8px 8px 0; }
+.steps b { font-family: 'Cinzel', serif; font-size: .85rem; letter-spacing: .06em; color: #fff6d8; }
+.summary .watch { margin-top: 14px; color: #ffc4b6; font-style: italic; }
 .summary .disc { font-size: .85rem; color: rgba(181, 169, 216, .7); font-style: italic; margin: 14px 0 0; text-align: center; }
 .actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; animation: fadeIn 1s both; }
 
